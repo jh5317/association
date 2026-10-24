@@ -65,6 +65,8 @@ th { background: var(--bg-alt); }
   .nav a { display: block; padding: 14px 16px; }
   .hero { padding: 64px 0; }
   .hero h1 { font-size: 1.75rem; }
+  table.wide { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  table.wide > tbody { display: table; min-width: 760px; }
 }
 a.card { display: block; transition: border-color .2s; }
 a.card:hover { border-color: var(--primary); }
