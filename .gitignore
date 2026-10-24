@@ -4,3 +4,9 @@ Thumbs.db
 .idea/
 node_modules/
 *.log
+
+# Supabase 키 등 비밀 값 (깃허브에 올리지 않음)
+.env
+.env.*
+!.env.example
+.vercel/

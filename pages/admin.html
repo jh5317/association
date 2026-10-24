@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>관리자 | 사단법인 한국 오픈이노베이션 협회</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="util-bar">
+    <div class="container" id="auth-links">
+      <a href="../pages/login.html">로그인</a>
+      <a href="../pages/signup.html">회원가입</a>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo">(사)한국 오픈이노베이션 협회</a>
+      <button class="menu-toggle" aria-label="메뉴 열기">☰</button>
+      <nav class="nav">
+        <ul>
+          <li><a href="../pages/about.html">법인소개</a></li>
+          <li><a href="../pages/certificate.html">자격안내</a></li>
+          <li><a href="../pages/verify.html">자격조회</a></li>
+          <li><a href="../pages/education.html">교육안내</a></li>
+          <li><a href="../pages/notice.html">공지사항</a></li>
+          <li><a href="../pages/donate.html">후원안내</a></li>
+          <li><a href="../pages/contact.html">오시는 길</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-title"><div class="container"><h1>관리자</h1></div></section>
+  <main class="section">
+    <div class="container">
+      <p id="msg" class="msg" hidden></p>
+      <div id="admin" hidden>
+        <div class="tabs">
+          <button data-tab="notices" class="active">공지사항</button>
+          <button data-tab="courses">교육 일정</button>
+          <button data-tab="certificates">자격증</button>
+          <button data-tab="inquiries">문의</button>
+          <button data-tab="members">회원</button>
+        </div>
+
+        <section class="panel" id="panel-notices">
+          <form class="form wide" id="form-notices">
+            <input type="hidden" name="id">
+            <div class="form-row">
+              <label>분류<select name="category"><option>공지</option><option>교육</option><option>자격</option><option>보도자료</option></select></label>
+              <label>게시일<input type="date" name="published_at" required></label>
+            </div>
+            <label>제목<input type="text" name="title" required></label>
+            <label>내용<textarea name="body"></textarea></label>
+            <label class="check"><input type="checkbox" name="is_pinned"> <span>목록 맨 위에 고정</span></label>
+            <div class="actions"><button class="btn btn-primary" type="submit">저장</button><button class="btn btn-line" type="reset">새로 쓰기</button></div>
+          </form>
+          <table class="wide"><thead><tr><th style="width:110px">게시일</th><th style="width:80px">분류</th><th>제목</th><th style="width:150px"></th></tr></thead><tbody id="list-notices"></tbody></table>
+        </section>
+
+        <section class="panel" id="panel-courses" hidden>
+          <form class="form wide" id="form-courses">
+            <input type="hidden" name="id">
+            <div class="form-row">
+              <label>과정명<input type="text" name="title" required placeholder="오픈이노베이션 전문가 2급"></label>
+              <label>등급<select name="grade"><option>2급</option><option>1급</option><option>기타</option></select></label>
+              <label>기수<input type="number" name="cohort" min="1"></label>
+              <label>상태<select name="status"><option>모집예정</option><option>모집중</option><option>마감</option><option>종료</option><option>준비중</option></select></label>
+            </div>
+            <div class="form-row">
+              <label>교육 시작일<input type="date" name="edu_start"></label>
+              <label>교육 종료일<input type="date" name="edu_end"></label>
+              <label>시험일<input type="date" name="exam_date"></label>
+              <label>합격 발표일<input type="date" name="result_date"></label>
+            </div>
+            <div class="form-row">
+              <label>장소<input type="text" name="location"></label>
+              <label>정원<input type="number" name="capacity" min="0"></label>
+              <label>수강료(원)<input type="number" name="fee" min="0"></label>
+              <label>응시료·발급비(원)<input type="number" name="exam_fee" min="0"></label>
+            </div>
+            <div class="form-row">
+              <label>신청 페이지 주소<input type="url" name="apply_url" placeholder="https://"></label>
+              <label>일정 메모 (날짜 대신 표시)<input type="text" name="schedule_note"></label>
+              <label>정렬 순서<input type="number" name="sort_order" value="0"></label>
+            </div>
+            <div class="actions"><button class="btn btn-primary" type="submit">저장</button><button class="btn btn-line" type="reset">새로 쓰기</button></div>
+          </form>
+          <table class="wide"><thead><tr><th>과정</th><th>교육일</th><th style="width:90px">상태</th><th style="width:150px"></th></tr></thead><tbody id="list-courses"></tbody></table>
+        </section>
+
+        <section class="panel" id="panel-certificates" hidden>
+          <form class="form wide" id="form-certificates">
+            <input type="hidden" name="id">
+            <div class="form-row">
+              <label>자격번호<input type="text" name="cert_number" required placeholder="OI-2026-0001"></label>
+              <label>이름<input type="text" name="name" required></label>
+              <label>이메일 (회원 마이페이지 연결용)<input type="email" name="email"></label>
+            </div>
+            <div class="form-row">
+              <label>등급<select name="grade"><option>2급</option><option>1급</option></select></label>
+              <label>취득일<input type="date" name="issued_at" required></label>
+              <label>교육 과정<select name="course_id"><option value="">선택 안 함</option></select></label>
+              <label>상태<select name="status"><option>유효</option><option>취소</option></select></label>
+            </div>
+            <div class="actions"><button class="btn btn-primary" type="submit">저장</button><button class="btn btn-line" type="reset">새로 쓰기</button></div>
+          </form>
+          <table class="wide"><thead><tr><th>자격번호</th><th>이름</th><th>등급</th><th>취득일</th><th>상태</th><th style="width:150px"></th></tr></thead><tbody id="list-certificates"></tbody></table>
+        </section>
+
+        <section class="panel" id="panel-inquiries" hidden>
+          <form class="form wide" id="form-inquiries" hidden>
+            <input type="hidden" name="id">
+            <p id="inquiry-view"></p>
+            <label>답변 (회원이 마이페이지에서 볼 수 있습니다)<textarea name="answer"></textarea></label>
+            <label>상태<select name="status"><option>접수</option><option>답변완료</option></select></label>
+            <div class="actions"><button class="btn btn-primary" type="submit">저장</button><button class="btn btn-line" type="reset">닫기</button></div>
+          </form>
+          <table class="wide"><thead><tr><th style="width:110px">접수일</th><th style="width:120px">이름</th><th>내용</th><th style="width:90px">상태</th><th style="width:150px"></th></tr></thead><tbody id="list-inquiries"></tbody></table>
+        </section>
+
+        <section class="panel" id="panel-members" hidden>
+          <table class="wide"><thead><tr><th>가입일</th><th>이름</th><th>이메일</th><th>휴대전화</th><th>소속</th><th>메일 수신</th><th>권한</th></tr></thead><tbody id="list-members"></tbody></table>
+          <p style="color:var(--muted);margin-top:8px">※ 관리자 지정은 Supabase SQL Editor에서 합니다 (README 참고).</p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>사단법인 한국 오픈이노베이션 협회</strong></p>
+      <p>대표자: 박재홍 | 고유번호: 0000000</p>
+      <p>주소: 서울 광화문 | 전화: 02-3290-4411 | 이메일: luckiest@korea.ac.kr</p>
+      <p><a href="../pages/privacy.html"><strong>개인정보처리방침</strong></a></p>
+      <p>&copy; 2026 사단법인 한국 오픈이노베이션 협회. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="/api/config"></script>
+  <script src="../js/vendor/supabase-2.117.2.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    (async () => {
+      const msg = document.getElementById("msg");
+      if (!DB.ready) return DB.message(msg, DB.notReadyText(), "info");
+      if (!(await DB.requireLogin())) return;
+      const profile = await DB.getProfile();
+      if (!profile || profile.role !== "admin") return DB.message(msg, "관리자만 볼 수 있는 페이지입니다.", "error");
+      document.getElementById("admin").hidden = false;
+      const db = DB.client, esc = DB.esc, kdate = DB.kdate;
+      const cache = {};
+      const idOf = (form) => form.elements.namedItem("id");
+
+      document.querySelectorAll(".tabs button").forEach((b) => b.addEventListener("click", () => {
+        document.querySelectorAll(".tabs button").forEach((x) => x.classList.toggle("active", x === b));
+        document.querySelectorAll(".panel").forEach((p) => (p.hidden = p.id !== "panel-" + b.dataset.tab));
+        DB.message(msg, "");
+      }));
+
+      const buttons = (table, id) =>
+        `<div class="actions"><button class="btn btn-line btn-sm" data-edit="${table}" data-id="${id}">수정</button>` +
+        `<button class="btn btn-danger btn-sm" data-del="${table}" data-id="${id}">삭제</button></div>`;
+
+      const config = {
+        notices: {
+          order: [["is_pinned", false], ["published_at", false], ["id", false]],
+          row: (n) => `<tr><td>${kdate(n.published_at, false)}</td><td>${esc(n.category)}</td><td>${n.is_pinned ? '<span class="badge pin">고정</span> ' : ""}${esc(n.title)}</td><td>${buttons("notices", n.id)}</td></tr>`,
+        },
+        courses: {
+          order: [["sort_order", true], ["id", true]],
+          row: (c) => `<tr><td>${esc(c.title)}${c.cohort ? ` (${c.cohort}기)` : ""}</td><td>${c.edu_start ? kdate(c.edu_start) + " ~ " + kdate(c.edu_end) : esc(c.schedule_note)}</td><td>${esc(c.status)}</td><td>${buttons("courses", c.id)}</td></tr>`,
+        },
+        certificates: {
+          order: [["issued_at", false], ["cert_number", true]],
+          row: (c) => `<tr><td>${esc(c.cert_number)}</td><td>${esc(c.name)}</td><td>${esc(c.grade)}</td><td>${kdate(c.issued_at, false)}</td><td>${esc(c.status)}</td><td>${buttons("certificates", c.id)}</td></tr>`,
+        },
+        inquiries: {
+          order: [["created_at", false]],
+          row: (q) => `<tr><td>${kdate(q.created_at, false)}</td><td>${esc(q.name)}</td><td><span class="badge">${esc(q.category)}</span> ${esc(q.message.slice(0, 60))}${q.message.length > 60 ? "…" : ""}</td><td>${esc(q.status)}</td><td><div class="actions"><button class="btn btn-line btn-sm" data-edit="inquiries" data-id="${q.id}">답변</button><button class="btn btn-danger btn-sm" data-del="inquiries" data-id="${q.id}">삭제</button></div></td></tr>`,
+        },
+      };
+
+      async function load(table) {
+        let query = db.from(table).select("*");
+        for (const [col, asc] of config[table].order) query = query.order(col, { ascending: asc });
+        const { data, error } = await query;
+        if (error) return DB.message(msg, "불러오지 못했습니다: " + error.message, "error");
+        cache[table] = data;
+        document.getElementById("list-" + table).innerHTML = data.length ? data.map(config[table].row).join("") : '<tr><td colspan="6">자료가 없습니다.</td></tr>';
+        if (table === "courses") {
+          const sel = document.querySelector("#form-certificates [name=course_id]");
+          sel.innerHTML = '<option value="">선택 안 함</option>' + data.map((c) => `<option value="${c.id}">${esc(c.title)}${c.cohort ? ` ${c.cohort}기` : ""}</option>`).join("");
+        }
+      }
+
+      function fill(form, row) {
+        for (const el of form.elements) {
+          if (!el.name || !(el.name in row)) continue;
+          if (el.type === "checkbox") el.checked = Boolean(row[el.name]);
+          else el.value = row[el.name] ?? "";
+        }
+      }
+
+      function read(form) {
+        const out = {};
+        for (const el of form.elements) {
+          if (!el.name || el.name === "id") continue;
+          if (el.type === "checkbox") out[el.name] = el.checked;
+          else if (el.type === "number" || el.name === "course_id") out[el.name] = el.value === "" ? null : Number(el.value);
+          else if (el.type === "date") out[el.name] = el.value || null;
+          else out[el.name] = el.value.trim();
+        }
+        return out;
+      }
+
+      for (const table of Object.keys(config)) {
+        const form = document.getElementById("form-" + table);
+        form.addEventListener("reset", () => { idOf(form).value = ""; if (table === "inquiries") form.hidden = true; });
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const values = read(form);
+          const id = idOf(form).value;
+          const { error } = id ? await db.from(table).update(values).eq("id", id) : await db.from(table).insert(values);
+          if (error) return DB.message(msg, "저장하지 못했습니다: " + (error.code === "23505" ? "이미 있는 자격번호입니다." : error.message), "error");
+          DB.message(msg, "저장했습니다.", "ok");
+          form.reset();
+          load(table);
+        });
+      }
+
+      document.getElementById("admin").addEventListener("click", async (e) => {
+        const b = e.target.closest("button[data-id]");
+        if (!b) return;
+        const table = b.dataset.edit || b.dataset.del;
+        const row = cache[table].find((r) => String(r.id) === b.dataset.id);
+        if (b.dataset.del) {
+          if (!confirm("삭제할까요? 되돌릴 수 없습니다.")) return;
+          const { error } = await db.from(table).delete().eq("id", row.id);
+          DB.message(msg, error ? "삭제하지 못했습니다." : "삭제했습니다.", error ? "error" : "ok");
+          return load(table);
+        }
+        const form = document.getElementById("form-" + table);
+        form.hidden = false;
+        fill(form, row);
+        idOf(form).value = row.id;
+        if (table === "inquiries") {
+          document.getElementById("inquiry-view").innerHTML =
+            `<strong>${esc(row.name)}</strong> · ${esc(row.email)} · ${esc(row.phone)} · ${kdate(row.created_at, false)}<br><span style="white-space:pre-wrap">${esc(row.message)}</span>`;
+        }
+        form.scrollIntoView({ behavior: "smooth" });
+      });
+
+      document.querySelector("#form-notices [name=published_at]").valueAsDate = new Date();
+      await Promise.all(Object.keys(config).map(load));
+      const members = await db.from("profiles").select("*").order("created_at", { ascending: false });
+      document.getElementById("list-members").innerHTML = (members.data || []).map((m) =>
+        `<tr><td>${kdate(m.created_at, false)}</td><td>${esc(m.name)}</td><td>${esc(m.email)}</td><td>${esc(m.phone)}</td><td>${esc(m.organization)}</td><td>${m.marketing_agree ? "동의" : "-"}</td><td>${m.role === "admin" ? "관리자" : "회원"}</td></tr>`).join("");
+    })();
+  </script>
+</body>
+</html>

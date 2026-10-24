@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>회원가입 | 사단법인 한국 오픈이노베이션 협회</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="util-bar">
+    <div class="container" id="auth-links">
+      <a href="../pages/login.html">로그인</a>
+      <a href="../pages/signup.html">회원가입</a>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo">(사)한국 오픈이노베이션 협회</a>
+      <button class="menu-toggle" aria-label="메뉴 열기">☰</button>
+      <nav class="nav">
+        <ul>
+          <li><a href="../pages/about.html">법인소개</a></li>
+          <li><a href="../pages/certificate.html">자격안내</a></li>
+          <li><a href="../pages/verify.html">자격조회</a></li>
+          <li><a href="../pages/education.html">교육안내</a></li>
+          <li><a href="../pages/notice.html">공지사항</a></li>
+          <li><a href="../pages/donate.html">후원안내</a></li>
+          <li><a href="../pages/contact.html">오시는 길</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-title"><div class="container"><h1>회원가입</h1></div></section>
+  <main class="section">
+    <div class="container auth-box">
+      <p id="msg" class="msg" hidden></p>
+      <form id="signup-form" class="form">
+        <label>이메일 (아이디)<input type="email" name="email" required autocomplete="email"></label>
+        <label>비밀번호 (8자 이상)<input type="password" name="password" minlength="8" required autocomplete="new-password"></label>
+        <label>비밀번호 확인<input type="password" name="password2" minlength="8" required autocomplete="new-password"></label>
+        <label>이름<input type="text" name="name" required autocomplete="name"></label>
+        <label>휴대전화<input type="tel" name="phone" placeholder="010-0000-0000" autocomplete="tel"></label>
+        <label>소속 (회사·기관·학교)<input type="text" name="organization"></label>
+        <label class="check"><input type="checkbox" name="privacy" required> <span>[필수] <a href="privacy.html" target="_blank" style="color:var(--primary);text-decoration:underline">개인정보 수집·이용</a>에 동의합니다.</span></label>
+        <label class="check"><input type="checkbox" name="marketing"> <span>[선택] 교육·행사 안내 메일 수신에 동의합니다.</span></label>
+        <button class="btn btn-primary" type="submit">가입하기</button>
+      </form>
+      <div class="links">이미 회원이신가요? <a href="login.html">로그인</a></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>사단법인 한국 오픈이노베이션 협회</strong></p>
+      <p>대표자: 박재홍 | 고유번호: 0000000</p>
+      <p>주소: 서울 광화문 | 전화: 02-3290-4411 | 이메일: luckiest@korea.ac.kr</p>
+      <p><a href="../pages/privacy.html"><strong>개인정보처리방침</strong></a></p>
+      <p>&copy; 2026 사단법인 한국 오픈이노베이션 협회. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="/api/config"></script>
+  <script src="../js/vendor/supabase-2.117.2.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const msg = document.getElementById("msg");
+    const form = document.getElementById("signup-form");
+    if (!DB.ready) DB.message(msg, DB.notReadyText(), "info");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!DB.ready) return;
+      const f = new FormData(form);
+      if (f.get("password") !== f.get("password2")) return DB.message(msg, "비밀번호 확인이 일치하지 않습니다.", "error");
+      const { data, error } = await DB.client.auth.signUp({
+        email: f.get("email"),
+        password: f.get("password"),
+        options: {
+          emailRedirectTo: location.origin + "/pages/login.html",
+          data: { name: f.get("name"), phone: f.get("phone"), organization: f.get("organization"), marketing_agree: f.get("marketing") === "on" },
+        },
+      });
+      if (error) {
+        const text = /registered|exists/i.test(error.message) ? "이미 가입된 이메일입니다." : "가입하지 못했습니다: " + error.message;
+        return DB.message(msg, text, "error");
+      }
+      form.hidden = true;
+      if (data.session) return (location.href = "mypage.html");
+      DB.message(msg, f.get("email") + " 으로 인증 메일을 보냈습니다. 메일의 링크를 누르면 가입이 완료됩니다.", "ok");
+    });
+  </script>
+</body>
+</html>

@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+  <div class="util-bar">
+    <div class="container" id="auth-links">
+      <a href="../pages/login.html">로그인</a>
+      <a href="../pages/signup.html">회원가입</a>
+    </div>
+  </div>
   <header class="site-header">
     <div class="container">
       <a href="../index.html" class="logo">(사)한국 오픈이노베이션 협회</a>
@@ -15,6 +21,7 @@
         <ul>
           <li><a href="../pages/about.html">법인소개</a></li>
           <li><a href="../pages/certificate.html">자격안내</a></li>
+          <li><a href="../pages/verify.html">자격조회</a></li>
           <li><a href="../pages/education.html" class="active">교육안내</a></li>
           <li><a href="../pages/notice.html">공지사항</a></li>
           <li><a href="../pages/donate.html">후원안내</a></li>
@@ -36,9 +43,11 @@
 
       <h2 style="margin-top:48px">교육 일정</h2>
       <table class="wide">
-        <tr><th>과정</th><th style="width:220px">일정</th><th style="width:200px">장소</th><th style="width:100px">정원</th><th style="width:120px">수강료</th><th style="width:100px">상태</th></tr>
+        <thead><tr><th>과정</th><th style="width:220px">일정</th><th style="width:200px">장소</th><th style="width:100px">정원</th><th style="width:120px">수강료</th><th style="width:100px">상태</th></tr></thead>
+        <tbody id="course-rows">
         <tr><td>오픈이노베이션 전문가 2급 (1기)</td><td>교육: 2026. 12. 3.(목) ~ 12. 4.(금), 2일간<br>시험: 2026. 12. 11.(금)<br>발표: 2026. 12. 18.(금)</td><td>한국생산성본부 (서울)</td><td>30명</td><td>660,000원<br><small style="color:var(--muted)">교재·강의료 포함</small></td><td>모집예정</td></tr>
         <tr><td>오픈이노베이션 전문가 1급 심화과정</td><td>2급 1기 자격 취득 1년 후 개설 예정</td><td>추후 공지</td><td>-</td><td>추후 공지</td><td>준비중</td></tr>
+        </tbody>
       </table>
       <p style="color:var(--muted);margin-top:12px">※ 수강료에는 교재비와 강의료가 포함되어 있습니다. 자격 시험 응시료 및 자격증 발급비 100,000원은 별도입니다.<br>※ 자격 시험은 교육 종료 1주일 후 한국생산성본부에서 오프라인으로 2시간 동안 실시하며, 100점 만점에 60점 이상이면 합격입니다. 합격 발표는 시험 1주일 후입니다.</p>
 
@@ -57,9 +66,33 @@
       <p><strong>사단법인 한국 오픈이노베이션 협회</strong></p>
       <p>대표자: 박재홍 | 고유번호: 0000000</p>
       <p>주소: 서울 광화문 | 전화: 02-3290-4411 | 이메일: luckiest@korea.ac.kr</p>
+      <p><a href="../pages/privacy.html"><strong>개인정보처리방침</strong></a></p>
       <p>&copy; 2026 사단법인 한국 오픈이노베이션 협회. All rights reserved.</p>
     </div>
   </footer>
+  <script src="/api/config"></script>
+  <script src="../js/vendor/supabase-2.117.2.js"></script>
+  <script src="../js/db.js"></script>
   <script src="../js/main.js"></script>
+  <script>
+    (async () => {
+      if (!DB.ready) return;
+      const { data } = await DB.client.from("courses").select("*").order("sort_order").order("id");
+      if (!data || !data.length) return;
+      const { esc, kdate, won } = DB;
+      const md = (iso) => kdate(iso).replace(/^\d+\. /, "");
+      document.getElementById("course-rows").innerHTML = data.map((c) => {
+        const days = c.edu_start && c.edu_end ? Math.round((new Date(c.edu_end) - new Date(c.edu_start)) / 864e5) + 1 : 0;
+        const schedule = c.edu_start
+          ? `교육: ${kdate(c.edu_start)}${c.edu_end && c.edu_end !== c.edu_start ? " ~ " + md(c.edu_end) + `, ${days}일간` : ""}` +
+            (c.exam_date ? `<br>시험: ${kdate(c.exam_date)}` : "") + (c.result_date ? `<br>발표: ${kdate(c.result_date)}` : "")
+          : esc(c.schedule_note || "추후 공지");
+        const apply = c.apply_url && c.status === "모집중" ? `<br><a class="btn btn-primary btn-sm" href="${esc(c.apply_url)}" target="_blank" rel="noopener">신청하기</a>` : "";
+        return `<tr><td>${esc(c.title)}${c.cohort ? ` (${c.cohort}기)` : ""}</td><td>${schedule}</td><td>${esc(c.location || "추후 공지")}</td>` +
+          `<td>${c.capacity ? c.capacity + "명" : "-"}</td><td>${won(c.fee)}${c.fee != null ? '<br><small style="color:var(--muted)">교재·강의료 포함</small>' : ""}</td><td>${esc(c.status)}${apply}</td></tr>`;
+      }).join("");
+    })();
+  </script>
+
 </body>
 </html>

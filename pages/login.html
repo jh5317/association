@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>로그인 | 사단법인 한국 오픈이노베이션 협회</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="util-bar">
+    <div class="container" id="auth-links">
+      <a href="../pages/login.html">로그인</a>
+      <a href="../pages/signup.html">회원가입</a>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo">(사)한국 오픈이노베이션 협회</a>
+      <button class="menu-toggle" aria-label="메뉴 열기">☰</button>
+      <nav class="nav">
+        <ul>
+          <li><a href="../pages/about.html">법인소개</a></li>
+          <li><a href="../pages/certificate.html">자격안내</a></li>
+          <li><a href="../pages/verify.html">자격조회</a></li>
+          <li><a href="../pages/education.html">교육안내</a></li>
+          <li><a href="../pages/notice.html">공지사항</a></li>
+          <li><a href="../pages/donate.html">후원안내</a></li>
+          <li><a href="../pages/contact.html">오시는 길</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-title"><div class="container"><h1>로그인</h1></div></section>
+  <main class="section">
+    <div class="container auth-box">
+      <p id="msg" class="msg" hidden></p>
+      <form id="login-form" class="form">
+        <label>이메일<input type="email" name="email" required autocomplete="email"></label>
+        <label>비밀번호<input type="password" name="password" required autocomplete="current-password"></label>
+        <button class="btn btn-primary" type="submit">로그인</button>
+      </form>
+      <div class="links">
+        <a href="signup.html">회원가입</a>
+        <a href="#" id="reset-link">비밀번호를 잊으셨나요?</a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>사단법인 한국 오픈이노베이션 협회</strong></p>
+      <p>대표자: 박재홍 | 고유번호: 0000000</p>
+      <p>주소: 서울 광화문 | 전화: 02-3290-4411 | 이메일: luckiest@korea.ac.kr</p>
+      <p><a href="../pages/privacy.html"><strong>개인정보처리방침</strong></a></p>
+      <p>&copy; 2026 사단법인 한국 오픈이노베이션 협회. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="/api/config"></script>
+  <script src="../js/vendor/supabase-2.117.2.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const msg = document.getElementById("msg");
+    const form = document.getElementById("login-form");
+    if (!DB.ready) DB.message(msg, DB.notReadyText(), "info");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!DB.ready) return;
+      const f = new FormData(form);
+      const { error } = await DB.client.auth.signInWithPassword({ email: f.get("email"), password: f.get("password") });
+      if (error) {
+        const text = /confirm/i.test(error.message) ? "이메일 인증을 먼저 완료해 주세요. 가입 시 받은 메일의 링크를 눌러 주세요."
+          : "이메일 또는 비밀번호가 맞지 않습니다.";
+        return DB.message(msg, text, "error");
+      }
+      const next = new URLSearchParams(location.search).get("next");
+      location.href = next && next.startsWith("/") ? next : "mypage.html";
+    });
+    document.getElementById("reset-link").addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!DB.ready) return;
+      const email = form.email.value.trim();
+      if (!email) return DB.message(msg, "위 칸에 가입한 이메일을 입력한 뒤 다시 눌러 주세요.", "info");
+      const { error } = await DB.client.auth.resetPasswordForEmail(email, { redirectTo: location.origin + "/pages/reset.html" });
+      DB.message(msg, error ? "메일을 보내지 못했습니다. 잠시 후 다시 시도해 주세요." : "비밀번호 재설정 메일을 보냈습니다. 메일함을 확인해 주세요.", error ? "error" : "ok");
+    });
+  </script>
+</body>
+</html>

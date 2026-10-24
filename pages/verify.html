@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>자격조회 | 사단법인 한국 오픈이노베이션 협회</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="util-bar">
+    <div class="container" id="auth-links">
+      <a href="../pages/login.html">로그인</a>
+      <a href="../pages/signup.html">회원가입</a>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo">(사)한국 오픈이노베이션 협회</a>
+      <button class="menu-toggle" aria-label="메뉴 열기">☰</button>
+      <nav class="nav">
+        <ul>
+          <li><a href="../pages/about.html">법인소개</a></li>
+          <li><a href="../pages/certificate.html">자격안내</a></li>
+          <li><a href="../pages/verify.html" class="active">자격조회</a></li>
+          <li><a href="../pages/education.html">교육안내</a></li>
+          <li><a href="../pages/notice.html">공지사항</a></li>
+          <li><a href="../pages/donate.html">후원안내</a></li>
+          <li><a href="../pages/contact.html">오시는 길</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-title"><div class="container"><h1>자격증 진위 확인</h1></div></section>
+  <main class="section">
+    <div class="container">
+      <p>협회가 발급한 오픈이노베이션 전문가 자격증이 맞는지 확인할 수 있습니다. 자격증에 적힌 <strong>자격번호</strong>와 <strong>이름</strong>을 입력해 주세요.</p>
+      <p id="msg" class="msg" hidden></p>
+      <form id="verify-form" class="form" style="margin-top:24px">
+        <div class="form-row">
+          <label>자격번호<input type="text" name="cert_number" placeholder="예: OI-2026-0001" required></label>
+          <label>이름<input type="text" name="name" required></label>
+        </div>
+        <button class="btn btn-primary" type="submit">조회하기</button>
+      </form>
+      <div id="result"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>사단법인 한국 오픈이노베이션 협회</strong></p>
+      <p>대표자: 박재홍 | 고유번호: 0000000</p>
+      <p>주소: 서울 광화문 | 전화: 02-3290-4411 | 이메일: luckiest@korea.ac.kr</p>
+      <p><a href="../pages/privacy.html"><strong>개인정보처리방침</strong></a></p>
+      <p>&copy; 2026 사단법인 한국 오픈이노베이션 협회. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="/api/config"></script>
+  <script src="../js/vendor/supabase-2.117.2.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const msg = document.getElementById("msg");
+    const form = document.getElementById("verify-form");
+    const result = document.getElementById("result");
+    if (!DB.ready) DB.message(msg, DB.notReadyText(), "info");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!DB.ready) return;
+      DB.message(msg, "");
+      const { data, error } = await DB.client.rpc("verify_certificate", { p_cert_number: form.cert_number.value, p_name: form.elements.namedItem("name").value });
+      if (error) return DB.message(msg, "조회하지 못했습니다. 잠시 후 다시 시도해 주세요.", "error");
+      if (!data.length) {
+        result.innerHTML = "";
+        return DB.message(msg, "일치하는 자격 정보가 없습니다. 자격번호와 이름을 다시 확인해 주세요.", "error");
+      }
+      const c = data[0];
+      result.innerHTML = `<div class="result-card">
+        <h3 style="color:var(--primary);margin-bottom:12px">${c.status === "유효" ? "✔ 협회가 발급한 유효한 자격증입니다" : "이 자격증은 현재 효력이 없습니다"}</h3>
+        <table>
+          <tr><th style="width:140px">자격명</th><td>오픈이노베이션 전문가 ${DB.esc(c.grade)}</td></tr>
+          <tr><th>자격번호</th><td>${DB.esc(c.cert_number)}</td></tr>
+          <tr><th>성명</th><td>${DB.esc(c.name)}</td></tr>
+          <tr><th>취득일</th><td>${DB.kdate(c.issued_at, false)}</td></tr>
+          <tr><th>상태</th><td>${DB.esc(c.status)}</td></tr>
+        </table></div>`;
+    });
+  </script>
+</body>
+</html>

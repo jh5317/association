@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>마이페이지 | 사단법인 한국 오픈이노베이션 협회</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+  <div class="util-bar">
+    <div class="container" id="auth-links">
+      <a href="../pages/login.html">로그인</a>
+      <a href="../pages/signup.html">회원가입</a>
+    </div>
+  </div>
+  <header class="site-header">
+    <div class="container">
+      <a href="../index.html" class="logo">(사)한국 오픈이노베이션 협회</a>
+      <button class="menu-toggle" aria-label="메뉴 열기">☰</button>
+      <nav class="nav">
+        <ul>
+          <li><a href="../pages/about.html">법인소개</a></li>
+          <li><a href="../pages/certificate.html">자격안내</a></li>
+          <li><a href="../pages/verify.html">자격조회</a></li>
+          <li><a href="../pages/education.html">교육안내</a></li>
+          <li><a href="../pages/notice.html">공지사항</a></li>
+          <li><a href="../pages/donate.html">후원안내</a></li>
+          <li><a href="../pages/contact.html">오시는 길</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-title"><div class="container"><h1>마이페이지</h1></div></section>
+  <main class="section">
+    <div class="container">
+      <p id="msg" class="msg" hidden></p>
+      <h2>내 자격증</h2>
+      <table class="wide">
+        <thead><tr><th>자격번호</th><th>자격명</th><th>취득일</th><th>상태</th></tr></thead>
+        <tbody id="my-certs"><tr><td colspan="4">불러오는 중…</td></tr></tbody>
+      </table>
+      <p style="color:var(--muted);margin-top:8px">※ 가입한 이메일과 자격 취득 시 등록한 이메일이 같아야 표시됩니다.</p>
+
+      <h2 style="margin-top:48px">내 문의</h2>
+      <table class="wide">
+        <thead><tr><th style="width:120px">접수일</th><th style="width:80px">분류</th><th>내용</th><th style="width:100px">상태</th></tr></thead>
+        <tbody id="my-inquiries"><tr><td colspan="4">불러오는 중…</td></tr></tbody>
+      </table>
+
+      <h2 style="margin-top:48px">회원 정보</h2>
+      <form id="profile-form" class="form">
+        <label>이메일<input type="email" name="email" disabled></label>
+        <label>이름<input type="text" name="name" required></label>
+        <label>휴대전화<input type="tel" name="phone"></label>
+        <label>소속<input type="text" name="organization"></label>
+        <label class="check"><input type="checkbox" name="marketing_agree"> <span>교육·행사 안내 메일 수신에 동의합니다.</span></label>
+        <button class="btn btn-primary" type="submit">저장</button>
+      </form>
+      <p style="color:var(--muted);margin-top:24px">회원 탈퇴는 협회(luckiest@korea.ac.kr)로 요청해 주세요.</p>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>사단법인 한국 오픈이노베이션 협회</strong></p>
+      <p>대표자: 박재홍 | 고유번호: 0000000</p>
+      <p>주소: 서울 광화문 | 전화: 02-3290-4411 | 이메일: luckiest@korea.ac.kr</p>
+      <p><a href="../pages/privacy.html"><strong>개인정보처리방침</strong></a></p>
+      <p>&copy; 2026 사단법인 한국 오픈이노베이션 협회. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="/api/config"></script>
+  <script src="../js/vendor/supabase-2.117.2.js"></script>
+  <script src="../js/db.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    (async () => {
+      const msg = document.getElementById("msg");
+      if (!DB.ready) return DB.message(msg, DB.notReadyText(), "info");
+      const user = await DB.requireLogin();
+      if (!user) return;
+      const form = document.getElementById("profile-form");
+      const profile = await DB.getProfile();
+      if (profile) {
+        form.email.value = profile.email;
+        form.elements.namedItem("name").value = profile.name;
+        form.phone.value = profile.phone;
+        form.organization.value = profile.organization;
+        form.marketing_agree.checked = profile.marketing_agree;
+      }
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const { error } = await DB.client.from("profiles").update({
+          name: form.elements.namedItem("name").value.trim(), phone: form.phone.value.trim(),
+          organization: form.organization.value.trim(), marketing_agree: form.marketing_agree.checked,
+        }).eq("id", user.id);
+        DB.message(msg, error ? "저장하지 못했습니다." : "회원 정보를 저장했습니다.", error ? "error" : "ok");
+        if (!error) window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      const certs = await DB.client.from("certificates").select("cert_number, grade, issued_at, status").order("issued_at", { ascending: false });
+      document.getElementById("my-certs").innerHTML = (certs.data || []).length
+        ? certs.data.map((c) => `<tr><td>${DB.esc(c.cert_number)}</td><td>오픈이노베이션 전문가 ${DB.esc(c.grade)}</td><td>${DB.kdate(c.issued_at, false)}</td><td><span class="badge ${c.status === "유효" ? "on" : ""}">${DB.esc(c.status)}</span></td></tr>`).join("")
+        : '<tr><td colspan="4">등록된 자격증이 없습니다.</td></tr>';
+
+      const inq = await DB.client.from("inquiries").select("created_at, category, message, status, answer").eq("user_id", user.id).order("created_at", { ascending: false });
+      document.getElementById("my-inquiries").innerHTML = (inq.data || []).length
+        ? inq.data.map((q) => `<tr><td>${DB.kdate(q.created_at, false)}</td><td>${DB.esc(q.category)}</td><td>${DB.esc(q.message)}${q.answer ? `<div class="msg msg-info"><strong>답변</strong> ${DB.esc(q.answer)}</div>` : ""}</td><td><span class="badge ${q.status === "답변완료" ? "on" : ""}">${DB.esc(q.status)}</span></td></tr>`).join("")
+        : '<tr><td colspan="4">남긴 문의가 없습니다. <a href="contact.html" style="color:var(--primary)">문의하기</a></td></tr>';
+    })();
+  </script>
+</body>
+</html>

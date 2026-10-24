@@ -7,6 +7,12 @@
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+  <div class="util-bar">
+    <div class="container" id="auth-links">
+      <a href="../pages/login.html">로그인</a>
+      <a href="../pages/signup.html">회원가입</a>
+    </div>
+  </div>
   <header class="site-header">
     <div class="container">
       <a href="../index.html" class="logo">(사)한국 오픈이노베이션 협회</a>
@@ -15,6 +21,7 @@
         <ul>
           <li><a href="../pages/about.html">법인소개</a></li>
           <li><a href="../pages/certificate.html">자격안내</a></li>
+          <li><a href="../pages/verify.html">자격조회</a></li>
           <li><a href="../pages/education.html">교육안내</a></li>
           <li><a href="../pages/notice.html" class="active">공지사항</a></li>
           <li><a href="../pages/donate.html">후원안내</a></li>
@@ -28,10 +35,12 @@
   <main class="section">
     <div class="container">
       <table>
-        <tr><th style="width:80px">번호</th><th>제목</th><th style="width:140px">등록일</th></tr>
+        <thead><tr><th style="width:80px">번호</th><th>제목</th><th style="width:140px">등록일</th></tr></thead>
+        <tbody id="notice-rows">
         <tr><td>3</td><td><a href="education.html">오픈이노베이션 전문가 2급 1기 교육 안내 (12/3~4, 한국생산성본부)</a></td><td>2026-10-24</td></tr>
         <tr><td>2</td><td>2026년 정기총회 개최 안내</td><td>2026-10-24</td></tr>
         <tr><td>1</td><td>홈페이지 오픈 안내</td><td>2026-10-24</td></tr>
+        </tbody>
       </table>
     </div>
   </main>
@@ -41,9 +50,27 @@
       <p><strong>사단법인 한국 오픈이노베이션 협회</strong></p>
       <p>대표자: 박재홍 | 고유번호: 0000000</p>
       <p>주소: 서울 광화문 | 전화: 02-3290-4411 | 이메일: luckiest@korea.ac.kr</p>
+      <p><a href="../pages/privacy.html"><strong>개인정보처리방침</strong></a></p>
       <p>&copy; 2026 사단법인 한국 오픈이노베이션 협회. All rights reserved.</p>
     </div>
   </footer>
+  <script src="/api/config"></script>
+  <script src="../js/vendor/supabase-2.117.2.js"></script>
+  <script src="../js/db.js"></script>
   <script src="../js/main.js"></script>
+  <script>
+    (async () => {
+      if (!DB.ready) return;
+      const { data } = await DB.client.from("notices").select("id, category, title, is_pinned, published_at")
+        .order("is_pinned", { ascending: false }).order("published_at", { ascending: false }).order("id", { ascending: false });
+      if (!data) return;
+      const total = data.filter((n) => !n.is_pinned).length;
+      let no = total + 1;
+      document.getElementById("notice-rows").innerHTML = data.length ? data.map((n) =>
+        `<tr><td>${n.is_pinned ? '<span class="badge pin">공지</span>' : --no}</td><td><span class="badge">${DB.esc(n.category)}</span> <a href="notice-view.html?id=${n.id}">${DB.esc(n.title)}</a></td><td>${n.published_at}</td></tr>`).join("")
+        : '<tr><td colspan="3">등록된 공지가 없습니다.</td></tr>';
+    })();
+  </script>
+
 </body>
 </html>
