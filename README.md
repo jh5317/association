@@ -10,6 +10,8 @@ association/
 ├── index.html          # 메인 페이지
 ├── pages/
 │   ├── about.html      # 법인 소개 (설립 목적, 연혁, 임원)
+│   ├── certificate.html # 자격안내 (1급/2급, 취득 절차)
+│   ├── education.html  # 교육안내 (과정, 일정, 신청)
 │   ├── notice.html     # 공지사항
 │   ├── donate.html     # 후원 안내
 │   └── contact.html    # 오시는 길 / 문의

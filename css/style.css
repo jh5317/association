@@ -66,3 +66,5 @@ th { background: var(--bg-alt); }
   .hero { padding: 64px 0; }
   .hero h1 { font-size: 1.75rem; }
 }
+a.card { display: block; transition: border-color .2s; }
+a.card:hover { border-color: var(--primary); }
