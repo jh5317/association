@@ -1,6 +1,8 @@
 # 사단법인 한국 오픈이노베이션 협회 홈페이지 (association)
 
 사단법인 한국 오픈이노베이션 협회 공식 홈페이지 소스 코드 저장소입니다.
+**홈페이지 주소: https://association-teal-eight.vercel.app** (Vercel, `main` 브랜치에 push하면 자동 배포)
+
 별도 빌드 도구 없이 HTML/CSS/JS만으로 구성되어 있어 GitHub Pages, Netlify 등 정적 호스팅에 바로 배포할 수 있습니다.
 
 ## 폴더 구조
