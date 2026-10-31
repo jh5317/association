@@ -35,14 +35,20 @@
   <main class="section">
     <div class="container">
       <h2>오시는 길</h2>
+      <iframe id="gmap" class="map" src="https://maps.google.com/maps?q=%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90%20%EB%9D%BC%EC%9D%B4%EC%8B%9C%EC%9B%80%2C%20%EC%84%9C%EC%9A%B8%20%EC%84%B1%EB%B6%81%EA%B5%AC%20%EC%95%88%EC%95%94%EB%A1%9C%20145&amp;hl=ko&amp;z=17&amp;output=embed" title="고려대학교 라이시움 위치 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <div id="map" class="map" hidden></div>
+      <div class="map-links">
+        <a class="btn btn-line btn-sm" href="https://map.naver.com/p/search/%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90%20%EB%9D%BC%EC%9D%B4%EC%8B%9C%EC%9B%80" target="_blank" rel="noopener">네이버 지도</a>
+        <a class="btn btn-line btn-sm" href="https://map.kakao.com/link/search/%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90%20%EB%9D%BC%EC%9D%B4%EC%8B%9C%EC%9B%80" target="_blank" rel="noopener">카카오맵</a>
+        <a class="btn btn-line btn-sm" href="https://www.google.com/maps/search/?api=1&amp;query=%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90%20%EB%9D%BC%EC%9D%B4%EC%8B%9C%EC%9B%80%2C%20%EC%84%9C%EC%9A%B8%20%EC%84%B1%EB%B6%81%EA%B5%AC%20%EC%95%88%EC%95%94%EB%A1%9C%20145" target="_blank" rel="noopener">구글 지도</a>
+      </div>
       <table>
         <tr><th style="width:140px">장소</th><td>고려대학교 라이시움 314호</td></tr>
-        <tr><th>주소</th><td>서울 성북구 안암로 145 고려대학교 라이시움 314호<br><a class="btn btn-line btn-sm" style="margin-top:8px" href="https://map.naver.com/p/search/%EA%B3%A0%EB%A0%A4%EB%8C%80%ED%95%99%EA%B5%90%20%EB%9D%BC%EC%9D%B4%EC%8B%9C%EC%9B%80" target="_blank" rel="noopener">네이버 지도에서 보기</a></td></tr>
+        <tr><th>주소</th><td>서울 성북구 안암로 145 고려대학교 라이시움 314호</td></tr>
         <tr><th>전화</th><td><a href="tel:0232904411">02-3290-4411</a></td></tr>
         <tr><th>이메일</th><td><a href="mailto:luckiest@korea.ac.kr">luckiest@korea.ac.kr</a></td></tr>
         <tr><th>운영시간</th><td>평일 09:00 ~ 18:00 (주말·공휴일 휴무)</td></tr>
       </table>
-      <div id="map" class="map" hidden></div>
 
       <h2 id="inquiry" style="margin-top:56px">문의하기</h2>
       <p style="margin-bottom:24px">교육, 자격, 후원, 제휴 등 궁금한 점을 남겨 주시면 이메일로 답변드립니다. 로그인하고 남기시면 마이페이지에서 답변을 볼 수 있습니다.</p>
@@ -78,7 +84,7 @@
   <script src="../js/db.js"></script>
   <script src="../js/main.js"></script>
   <script>
-    // 네이버 지도: Vercel 환경 변수 NAVER_MAP_CLIENT_ID 가 있을 때만 표시
+    // 기본은 구글 지도. 네이버 지도가 정상적으로 뜨면 네이버 지도로 바꿔서 보여 줌
     (() => {
       const key = (window.SUPABASE_CONFIG || {}).naverMapKey;
       if (!key) return;
@@ -90,6 +96,7 @@
       script.onload = () => {
         const show = (pos) => {
           box.hidden = false;
+          document.getElementById("gmap").hidden = true;
           const map = new naver.maps.Map(box, { center: pos, zoom: 17 });
           const marker = new naver.maps.Marker({ position: pos, map });
           new naver.maps.InfoWindow({ content: `<div style="padding:8px 12px;font-size:14px">${place.name}</div>` }).open(map, marker);
