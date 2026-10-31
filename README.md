@@ -12,11 +12,11 @@ Supabase 접속 정보는 `api/config.js`(Vercel 함수)가 Vercel 환경 변수
 association/
 ├── index.html          # 메인 페이지
 ├── pages/
-│   ├── about.html      # 법인 소개 (설립 목적, 연혁, 임원)
-│   ├── certificate.html # 자격안내 (1급/2급, 취득 절차)
+│   ├── about.html      # 협회소개 (설립 목적, 비전, 연혁, 임원)
+│   ├── certificate.html # 자격증과정안내 > 자격 안내 탭 (1급/2급, 취득 절차)
 │   ├── education.html  # 교육안내 (과정 목록, 일정 요약, 신청 방법)
 │   ├── course-2.html   # 오픈이노베이션 전문가 2급 양성과정 상세 (시간표·수강료)
-│   ├── verify.html     # 자격증 진위 확인
+│   ├── verify.html     # 자격증과정안내 > 자격증 조회 탭
 │   ├── notice.html     # 공지사항 목록 (notice-view.html: 상세)
 │   ├── donate.html     # 후원 안내
 │   ├── contact.html    # 오시는 길 / 문의하기
