@@ -19,7 +19,7 @@ association/
 │   ├── verify.html     # 자격증과정안내 > 자격증 조회 탭
 │   ├── notice.html     # 공지사항 목록 (notice-view.html: 상세)
 │   ├── donate.html     # 후원 안내
-│   ├── contact.html    # 오시는 길 / 문의하기
+│   ├── contact.html    # Contact (오시는 길 / 문의하기)
 │   ├── signup.html, login.html, reset.html  # 회원가입·로그인·비밀번호 재설정
 │   ├── mypage.html     # 내 자격증·내 문의·회원 정보
 │   ├── admin.html      # 관리자 (공지·교육 일정·자격증·문의·회원)
