@@ -200,7 +200,7 @@ grant execute on function public.verify_certificate(text, text) to anon, authent
 -- 처음 데이터 (표가 비어 있을 때만 넣음)
 -- ─────────────────────────────────────────────
 insert into public.courses (title, grade, cohort, edu_start, edu_end, exam_date, result_date, location, capacity, fee, exam_fee, status, sort_order)
-select '오픈이노베이션 전문가 2급', '2급', 1, '2026-12-03', '2026-12-04', '2026-12-11', '2026-12-18', '한국생산성본부 (서울)', 30, 660000, 100000, '모집예정', 1
+select '오픈이노베이션 전문가 2급', '2급', 1, '2026-12-03', '2026-12-04', '2026-12-11', '2026-12-18', '서울창조경제혁신센터 (서울 용산구)', 30, 660000, 100000, '모집예정', 1
 where not exists (select 1 from public.courses);
 
 insert into public.courses (title, grade, schedule_note, location, status, sort_order)
@@ -209,8 +209,8 @@ where not exists (select 1 from public.courses where grade = '1급');
 
 insert into public.notices (category, title, body, is_pinned, published_at)
 select * from (values
-  ('교육', '오픈이노베이션 전문가 2급 1기 교육 안내 (12/3~4, 한국생산성본부)',
-   E'오픈이노베이션 전문가 2급 1기 교육을 아래와 같이 진행합니다.\n\n- 교육: 2026. 12. 3.(목) ~ 12. 4.(금), 2일간\n- 장소: 한국생산성본부 (서울)\n- 정원: 30명\n- 수강료: 660,000원 (교재·강의료 포함)\n- 시험 응시료 및 자격증 발급비: 100,000원 (별도)\n- 시험: 2026. 12. 11.(금), 2시간, 100점 만점 60점 이상 합격\n- 합격 발표: 2026. 12. 18.(금)\n\n신청과 납부는 한국생산성본부 신청 페이지에서 진행합니다.', true, date '2026-10-24'),
+  ('교육', '오픈이노베이션 전문가 2급 1기 교육 안내 (12/3~4, 서울창조경제혁신센터)',
+   E'오픈이노베이션 전문가 2급 1기 교육을 아래와 같이 진행합니다.\n\n- 교육: 2026. 12. 3.(목) ~ 12. 4.(금) 09:00 ~ 18:00, 2일간 (총 16시간)\n- 장소: 서울창조경제혁신센터 (서울 용산구)\n- 정원: 30명\n- 수강료: 660,000원 (교재·강의료 포함)\n- 시험 응시료 및 자격증 발급비: 100,000원 (별도)\n- 시험: 2026. 12. 11.(금), 2시간, 100점 만점 60점 이상 합격\n- 합격 발표: 2026. 12. 18.(금)\n\n신청과 납부는 한국생산성본부 신청 페이지에서 진행합니다.', true, date '2026-10-24'),
   ('공지', '2026년 정기총회 개최 안내', '정기총회 일정은 추후 안내드리겠습니다.', false, date '2026-10-24'),
   ('공지', '홈페이지 오픈 안내', '사단법인 한국 오픈이노베이션 협회 홈페이지를 오픈했습니다.', false, date '2026-10-24')
 ) as v(category, title, body, is_pinned, published_at)

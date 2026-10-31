@@ -38,26 +38,26 @@
     <div class="container">
       <h2>교육 과정</h2>
       <div class="cards">
-        <div class="card"><h3>오픈이노베이션 전문가 2급 양성과정</h3><p>오픈이노베이션 개념, 협업 모델, 사례 분석 등 기초 실무 과정입니다.</p></div>
+        <a class="card" href="course-2.html"><h3>오픈이노베이션 전문가 2급 양성과정</h3><p>오픈이노베이션 개론, 국내·해외 사례 분석, 법률 이슈, 실전 워크숍으로 구성된 2일 집중 과정입니다.</p><p style="margin-top:12px;color:var(--primary);font-weight:600">과정 자세히 보기</p></a>
         <div class="card"><h3>오픈이노베이션 전문가 1급 심화과정</h3><p>프로그램 기획, 기업-스타트업 매칭, 컨설팅·멘토링 실습 중심 심화 과정입니다. 2급 자격 취득 후 1년이 지난 분이 수강할 수 있습니다.</p></div>
         <div class="card"><h3>스타트업 육성·보육 프로그램</h3><p>예비·초기 창업자를 위한 멘토링과 네트워킹 프로그램입니다.</p></div>
       </div>
 
       <h2 style="margin-top:48px">교육 일정</h2>
       <table class="wide">
-        <thead><tr><th>과정</th><th style="width:220px">일정</th><th style="width:200px">장소</th><th style="width:100px">정원</th><th style="width:120px">수강료</th><th style="width:100px">상태</th></tr></thead>
+        <thead><tr><th>과정</th><th style="width:260px">교육 기간</th><th style="width:240px">장소</th><th style="width:100px">상태</th><th style="width:130px"></th></tr></thead>
         <tbody id="course-rows">
-        <tr><td>오픈이노베이션 전문가 2급 (1기)</td><td>교육: 2026. 12. 3.(목) ~ 12. 4.(금), 2일간<br>시험: 2026. 12. 11.(금)<br>발표: 2026. 12. 18.(금)</td><td>한국생산성본부 (서울)</td><td>30명</td><td>660,000원<br><small style="color:var(--muted)">교재·강의료 포함</small></td><td>모집예정</td></tr>
-        <tr><td>오픈이노베이션 전문가 1급 심화과정</td><td>2급 1기 자격 취득 1년 후 개설 예정</td><td>추후 공지</td><td>-</td><td>추후 공지</td><td>준비중</td></tr>
+        <tr><td>오픈이노베이션 전문가 2급 (1기)</td><td>2026. 12. 3.(목) ~ 12. 4.(금), 2일간</td><td>서울창조경제혁신센터 (서울 용산구)</td><td>모집예정</td><td><a class="btn btn-line btn-sm" href="course-2.html">자세히 보기</a></td></tr>
+        <tr><td>오픈이노베이션 전문가 1급 심화과정</td><td>2급 1기 자격 취득 1년 후 개설 예정</td><td>추후 공지</td><td>준비중</td><td></td></tr>
         </tbody>
       </table>
-      <p style="color:var(--muted);margin-top:12px">※ 수강료에는 교재비와 강의료가 포함되어 있습니다. 자격 시험 응시료 및 자격증 발급비 100,000원은 별도입니다.<br>※ 자격 시험은 교육 종료 1주일 후 한국생산성본부에서 오프라인으로 2시간 동안 실시하며, 100점 만점에 60점 이상이면 합격입니다. 합격 발표는 시험 1주일 후입니다.</p>
+      <p style="color:var(--muted);margin-top:12px">※ 교육 시간표, 수강료, 자격 시험 일정은 각 과정의 '자세히 보기'에서 확인할 수 있습니다.</p>
 
-      <h2 style="margin-top:48px">교육 신청</h2>
+      <h2 id="apply" style="margin-top:48px">교육 신청</h2>
       <div class="cards">
         <div class="card"><h3>1. 신청</h3><p>한국생산성본부 교육 신청 페이지에서 과정을 신청합니다. (신청 링크는 모집 시작 시 안내)</p></div>
-        <div class="card"><h3>2. 비용 납부</h3><p>한국생산성본부 신청 페이지에서 수강료(660,000원)와 응시료·발급비(100,000원)를 입금합니다.</p></div>
-        <div class="card"><h3>3. 교육 참석</h3><p>교육 일정에 맞춰 한국생산성본부(서울)에서 교육에 참석합니다.</p></div>
+        <div class="card"><h3>2. 비용 납부</h3><p>같은 신청 페이지에서 수강료와 자격 시험 응시료·발급비를 입금합니다.</p></div>
+        <div class="card"><h3>3. 교육 참석</h3><p>안내받은 일정과 장소에서 교육에 참석합니다.</p></div>
       </div>
       <p style="margin-top:16px">문의: 이메일(<a href="mailto:luckiest@korea.ac.kr">luckiest@korea.ac.kr</a>) 또는 전화(02-3290-4411)</p>
     </div>
@@ -82,17 +82,17 @@
       if (!DB.ready) return;
       const { data } = await DB.client.from("courses").select("*").order("sort_order").order("id");
       if (!data || !data.length) return;
-      const { esc, kdate, won } = DB;
+      const { esc, kdate } = DB;
       const md = (iso) => kdate(iso).replace(/^\d+\. /, "");
+      const detail = { "2급": "course-2.html" };
       document.getElementById("course-rows").innerHTML = data.map((c) => {
         const days = c.edu_start && c.edu_end ? Math.round((new Date(c.edu_end) - new Date(c.edu_start)) / 864e5) + 1 : 0;
-        const schedule = c.edu_start
-          ? `교육: ${kdate(c.edu_start)}${c.edu_end && c.edu_end !== c.edu_start ? " ~ " + md(c.edu_end) + `, ${days}일간` : ""}` +
-            (c.exam_date ? `<br>시험: ${kdate(c.exam_date)}` : "") + (c.result_date ? `<br>발표: ${kdate(c.result_date)}` : "")
+        const period = c.edu_start
+          ? kdate(c.edu_start) + (c.edu_end && c.edu_end !== c.edu_start ? " ~ " + md(c.edu_end) + `, ${days}일간` : "")
           : esc(c.schedule_note || "추후 공지");
-        const apply = c.apply_url && c.status === "모집중" ? `<br><a class="btn btn-primary btn-sm" href="${esc(c.apply_url)}" target="_blank" rel="noopener">신청하기</a>` : "";
-        return `<tr><td>${esc(c.title)}${c.cohort ? ` (${c.cohort}기)` : ""}</td><td>${schedule}</td><td>${esc(c.location || "추후 공지")}</td>` +
-          `<td>${c.capacity ? c.capacity + "명" : "-"}</td><td>${won(c.fee)}${c.fee != null ? '<br><small style="color:var(--muted)">교재·강의료 포함</small>' : ""}</td><td>${esc(c.status)}${apply}</td></tr>`;
+        const apply = c.apply_url && c.status === "모집중" ? `<a class="btn btn-primary btn-sm" href="${esc(c.apply_url)}" target="_blank" rel="noopener">신청하기</a> ` : "";
+        const more = detail[c.grade] ? `<a class="btn btn-line btn-sm" href="${detail[c.grade]}">자세히 보기</a>` : "";
+        return `<tr><td>${esc(c.title)}${c.cohort ? ` (${c.cohort}기)` : ""}</td><td>${period}</td><td>${esc(c.location || "추후 공지")}</td><td>${esc(c.status)}</td><td><div class="actions">${apply}${more}</div></td></tr>`;
       }).join("");
     })();
   </script>
