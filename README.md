@@ -57,7 +57,7 @@ association/
 1. [네이버 클라우드 플랫폼](https://www.ncloud.com) 콘솔 → **Maps** → **Application 등록**
    - API 선택: **Dynamic Map**, **Geocoding**
    - Web 서비스 URL: `https://association-teal-eight.vercel.app` (주소를 바꾸면 새 주소도 추가), 로컬 확인용 `http://localhost:3000`
-2. 발급된 **Client ID**를 Vercel 환경 변수 `NAVER_MAP_CLIENT_ID`에 넣고 **Redeploy** 합니다. (Client Secret은 넣지 않습니다)
+2. 발급된 **Client ID**는 `api/config.js`에 기본값으로 들어 있습니다. 바꾸려면 Vercel 환경 변수 `NAVER_MAP_CLIENT_ID`에 새 값을 넣고 **Redeploy** 합니다. (Client Secret은 어디에도 넣지 않습니다)
 3. 키가 없거나 잘못되면 지도는 숨겨지고 '네이버 지도에서 보기' 버튼만 보입니다.
 
 ## 데이터 구조

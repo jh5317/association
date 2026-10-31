@@ -4,7 +4,8 @@ module.exports = (req, res) => {
   const config = {
     url: process.env.SUPABASE_URL || "",
     key: process.env.SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_ANON_KEY || "",
-    naverMapKey: process.env.NAVER_MAP_CLIENT_ID || "",
+    // 네이버 지도 Client ID는 브라우저에 공개되는 값이고 NCP에 등록한 주소에서만 동작합니다. (Client Secret은 넣지 않음)
+    naverMapKey: process.env.NAVER_MAP_CLIENT_ID || "zgfmv56w4o",
   };
   res.setHeader("Content-Type", "application/javascript; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
